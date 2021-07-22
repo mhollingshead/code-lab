@@ -1,0 +1,275 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    overflow: hidden;
+}
+#app {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
+}
+#header{
+    height: 75px;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 0 0;
+}
+#logo {
+    width: 41px;
+    color: #0366d6;
+    font-size: 20px;
+    font-weight: 700;
+    display: inline-block;
+    text-align: center;
+}
+#firepad, .firepad {
+    width: calc(100vw - 300px) !important;
+    height: calc(100vh - 375px);
+}
+#users {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width: 300px;
+    height: calc(100vh - 375px);
+    padding: 16px;
+}
+#console {
+    width: 100vw;
+    height: 300px;
+}
+h2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+}
+#code-id {
+    font-weight: 300;
+}
+#theme-toggle {
+    border-radius: 5px;
+    display: flex;
+    overflow: hidden;
+}
+#theme-toggle > * {
+    padding: 4px;
+    min-width: 32px;
+    text-align: center;
+    cursor: pointer;
+}
+.material-icons-outlined {
+    font-family: 'Material Icons';
+}
+.avatar {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 16px;
+}
+.user {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+h4 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+#user-change {
+    display: flex;
+    width: 100%;
+    margin-bottom: 16px;
+}
+input, button {
+    outline: none;
+    padding: 8px;
+}
+input {
+    border-radius: 4px 0 0 4px;
+}
+button {
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+#username {
+    width: 100%;
+}
+.user p {
+    font-size: 14px;
+}
+#user-list {
+    overflow-y: scroll;
+}
+#console-head {
+    padding: 8px 0 8px 41px;
+    display: flex;
+    align-items: center;
+}
+#eval {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: #0366d6;
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    border: none;
+    margin-left: 16px;
+}
+pre {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+.console {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 12px;
+    line-height: 20px;
+    overflow-y: scroll;
+    height: calc(300px - 47px);
+    padding-bottom: 16px;
+}
+.op {
+    padding: 8px 41px;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+}
+.carrot {
+    color: #0366d6;
+    padding-right: 16px;
+    font-weight: 900;
+    font-size: 16px;
+    font-family: monospace;
+}
+.output {
+    text-align: left;
+}
+#clear {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: grey;
+    background: none;
+    outline: none;
+    border: none;
+}
+
+/* LIGHT */
+
+body {
+    background-color: white;
+    color: #3f3f3f;
+}
+#header{
+    border-bottom: 1px solid #dedede;
+}
+#users {
+    border-left: 1px solid #dedede;
+}
+#console {
+    border-top: 1px solid #dedede;
+}
+#console-head {
+    background-color: white;
+}
+#code-id {
+    color: grey;
+}
+#theme-toggle {
+    border: 1px solid #dedede;
+}
+#light {
+    border-right: 1px solid #dedede;
+}
+.option {
+    background: #f2f2f2;
+    color: #000000;
+}
+.active {
+    background-color: white;
+    color: #3f3f3f;
+}
+.material-icons-outlined {
+    font-family: 'Material Icons';
+}
+input {
+    border: 1px solid #dedede;
+    background: white;
+}
+input::placeholder {
+    color: black;
+}
+button {
+    border-top: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+    border-bottom: 1px solid #dedede;
+    border-left: none;
+    background: #f2f2f2;
+}
+.console {
+    background-color: #f2f2f2;
+}
+.op {
+    border-bottom: 1px solid rgb(0, 0, 0, 0.075);
+}
+
+/* DARK */
+
+.dark body {
+    background-color: #1D1F21;
+    color: white;
+}
+.dark #header{
+    border-bottom: 1px solid #25282c;
+}
+.dark #users {
+    border-left: 1px solid #25282c;
+}
+.dark #console {
+    border-top: 1px solid #25282c;
+}
+.dark #console-head {
+    background-color: #1D1F21;
+}
+.dark #code-id {
+    color: grey;
+}
+.dark #theme-toggle {
+    border: 1px solid #25282c;
+}
+.dark #light {
+    border-right: 1px solid #25282c;
+}
+.dark .option {
+    background: #1D1F21;
+    color: #ffffff;
+}
+.dark .active {
+    background-color: #101213;
+    color: #b8b8b8;
+}
+.dark .material-icons-outlined {
+    font-family: 'Material Icons';
+}
+.dark input {
+    border: 1px solid #25282c;
+    background: #1D1F21;
+    color: white;
+}
+.dark input::placeholder {
+    color: white;
+}
+.dark button {
+    border-top: 1px solid #25282c;
+    border-right: 1px solid #25282c;
+    border-bottom: 1px solid #25282c;
+    border-left: none;
+    background: #101213;
+    color: #b8b8b8;
+}
+.dark .console {
+    background-color: #25282c;
+}
+.dark .op {
+    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+}
