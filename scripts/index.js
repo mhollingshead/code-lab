@@ -127,57 +127,57 @@ function getExampleRef() {
 }
 
 // Override default console.log and redirect logs to our pseudo console
-// const legacy = console.log;
-// (function () {
-//     const logger = document.getElementById('log');
-//     console.log = function () {
-//         for (var i = 0; i < arguments.length; i++) {
-//             if (typeof arguments[i] == 'object') {
-//                 // If its an object, stringify
-//                 logger.innerHTML += `
-//                     <div class="op">
-//                         <div class="carrot">
-//                             <span class="m-i">
-//                                 navigate_before
-//                             </span>
-//                         </div>
-//                         <pre class="output">${(JSON && JSON.stringify ? JSON.stringify(arguments[i], undefined, 2) : arguments[i])}</pre>
-//                     </div>
-//                 `;
-//             } else {
-//                 // Else, log value
-//                 logger.innerHTML += `
-//                     <div class="op">
-//                         <div class="carrot">
-//                             <span class="m-i">
-//                                 navigate_before
-//                             </span>
-//                         </div>
-//                         <pre class="output">${arguments[i]}</pre>
-//                     </div>
-//                 `;
-//             }
-//             // Scroll to bottom of the console on new logs
-//             logger.scrollTop = logger.scrollHeight;
-//         }
-//     }
-// })()
+const legacy = console.log;
+(function () {
+    const logger = document.getElementById('log');
+    console.log = function () {
+        for (var i = 0; i < arguments.length; i++) {
+            if (typeof arguments[i] == 'object') {
+                // If its an object, stringify
+                logger.innerHTML += `
+                    <div class="op">
+                        <div class="carrot">
+                            <span class="m-i">
+                                navigate_before
+                            </span>
+                        </div>
+                        <pre class="output">${(JSON && JSON.stringify ? JSON.stringify(arguments[i], undefined, 2) : arguments[i])}</pre>
+                    </div>
+                `;
+            } else {
+                // Else, log value
+                logger.innerHTML += `
+                    <div class="op">
+                        <div class="carrot">
+                            <span class="m-i">
+                                navigate_before
+                            </span>
+                        </div>
+                        <pre class="output">${arguments[i]}</pre>
+                    </div>
+                `;
+            }
+            // Scroll to bottom of the console on new logs
+            logger.scrollTop = logger.scrollHeight;
+        }
+    }
+})()
 
-// // Log errors to console with necessary styling
-// function logError(e) {
-//     const logger = document.getElementById('log');
-//     const themeClass = (theme === "dark") ? "dark" : "";
-//     logger.innerHTML += `
-//         <div class="op error ${themeClass}">
-//             <div class="carrot error ${themeClass}">
-//                 <span class="m-i">
-//                     error
-//                 </span>
-//             </div>
-//             <pre class="output error ${themeClass}">${e}</pre>
-//         </div>
-//     `;
-// };
+// Log errors to console with necessary styling
+function logError(e) {
+    const logger = document.getElementById('log');
+    const themeClass = (theme === "dark") ? "dark" : "";
+    logger.innerHTML += `
+        <div class="op error ${themeClass}">
+            <div class="carrot error ${themeClass}">
+                <span class="m-i">
+                    error
+                </span>
+            </div>
+            <pre class="output error ${themeClass}">${e}</pre>
+        </div>
+    `;
+};
 
 // Generate initial user IDs
 function makeId(length) {
