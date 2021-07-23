@@ -10,11 +10,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="theme" href="./styles/light.css" rel="stylesheet">
     <link href="./styles/global.css" rel="stylesheet">
     
     <!-- Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- Tooltips -->
+    <link href="https://unpkg.com/microtip/microtip.css" rel="stylesheet" />
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase.js"></script>
@@ -32,13 +34,14 @@
     <div id="app">
         <header id="header">
             <h2 style="display: flex; align-items: center;">
-                <div class="material-icons-outlined" id="logo">arrow_forward_ios</div>
+                <div class="m-i" id="logo">navigate_next</div>
                 codelab
-                <span id="code-id">/:id</span>
+                <span id="id-seperator">/</span>
+                <span id="code-id" aria-label="Copy sharable link" data-microtip-position="bottom" role="tooltip"></span>
             </h2>
-            <div id="theme-toggle" onclick="toggleTheme()">
-                <div id="light" class="material-icons-outlined option active">light_mode</div>
-                <div id="dark" class="material-icons-outlined option">dark_mode</div>
+            <div id="theme-toggle">
+                <div id="light" class="m-i option active">light_mode</div>
+                <div id="dark" class="m-i option">dark_mode</div>
             </div>
         </header>
         <div id="firepad"></div>
@@ -62,6 +65,6 @@
             <div id="log" class="console"></div>
         </div>
     </div>
-    <script src="./index.js"></script>
+    <script src="./scripts/index.js"></script>
 </body>
 </html>
