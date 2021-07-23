@@ -307,5 +307,5 @@ button {
 
 /* ACE OVERRIDES */
 .ace_identifier.dark {
-    color: white !important;
+    color: white;
 }
