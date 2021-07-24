@@ -23,7 +23,7 @@ function init() {
     editor.session.setMode("ace/mode/javascript");
 
     // Display proper instance id
-    document.querySelector('#code-id').innerText = '#' + sessionId;
+    _('#code-id').innerText = '#' + sessionId;
 
     // Init new firepad from ace editor
     const firepad = Firepad.fromACE(firepadRef, editor);
@@ -34,12 +34,11 @@ function init() {
     firepad.on('ready', () => {
         // Set new user id until changed
         const id = "User " + makeId(6);
-        document.querySelector("#username").value = id;
+        _("#username").value = id;
         firepad.setUserId(id)
 
         // Toggle light and dark theme styles
-        document.querySelector('#theme-toggle').addEventListener('click', () => {
-            document.querySelectorAll('*').forEach(el => el.classList.toggle('dark'));
+        _('#theme-toggle').addEventListener('click', () => {
             if (theme === "light") {
                 editor.setTheme("ace/theme/tomorrow_night");
                 theme = "dark";
@@ -47,15 +46,16 @@ function init() {
                 editor.setTheme("ace/theme/textmate");
                 theme = "light";
             }
+            document.querySelectorAll('*').forEach(el => el.classList.toggle('dark'));
         })
 
         // Change display name
-        document.querySelector("#user-change").addEventListener('submit', e => {
+        _("#user-change").addEventListener('submit', e => {
             e.preventDefault();
             const name = e.target.username.value;
             if (name) firepad.setUserId(name);
         });
-        document.querySelector('#code-id').addEventListener('click', () => {
+        _('#code-id').addEventListener('click', () => {
             // Add temporary element to body
             const tmp = document.createElement('input');
             tmp.value = window.location.href;
@@ -67,13 +67,13 @@ function init() {
             document.body.removeChild(tmp);
 
             // Handle aria label
-            const idArea = document.getElementById("code-id");
+            const idArea = _("#code-id");
             idArea.ariaLabel = "Copied to clipboard!";
             const revertAriaLabel = () => idArea.ariaLabel = "Copy sharable link";
             idArea.addEventListener('mouseout', () => setTimeout(revertAriaLabel, 500));
         });
         // Hijack the console
-        document.querySelector('#eval').addEventListener('click', () => {
+        _('#eval').addEventListener('click', () => {
             try {
                 // Evaluate code
                 eval(editor.getValue());
@@ -83,14 +83,14 @@ function init() {
             }
         });
         // Clear console
-        document.querySelector('#clear').addEventListener('click', () => {
-            document.querySelector('#log').innerHTML = "";
+        _('#clear').addEventListener('click', () => {
+            _('#log').innerHTML = "";
         });
     })
 
     // Display active user list when users are updated
     firepadRef.child('users').on('value', users => {
-        document.querySelector('#user-list').innerHTML = "";
+        _('#user-list').innerHTML = "";
         let i = 0;
         users.forEach(user => {
             const div = document.createElement('div');
@@ -102,7 +102,7 @@ function init() {
             const p = document.createElement('p');
             p.innerText = Object.keys(users.val())[i];
             div.appendChild(p);
-            document.querySelector('#user-list').appendChild(div);
+            _('#user-list').appendChild(div);
             i++;
         })
     });
@@ -111,51 +111,47 @@ function init() {
 // Connect to the propper database
 function getExampleRef() {
     var ref = firebase.database().ref();
-    var hash = window.location.hash.replace(/#/g, '');
+    var hash = window.location.hash.replace(/#/g, '-');
     if (hash) {
         // If db specified in url exists, connect to it
         ref = ref.child(hash);
-        sessionId = ref.key;
+        sessionId = ref.key.substr(1);
     } else {
         // Else generate new location.
         ref = ref.push();
         // add it as a hash to the URL.
-        window.location = window.location + '#' + ref.key; 
-        sessionId = ref.key;
+        window.location = window.location + '#' + ref.key.substr(1); 
+        sessionId = ref.key.substr(1);
     }
     return ref;
 }
 
 // Override default console.log and redirect logs to our pseudo console
-const legacy = console.log;
+legacy = console.log;
 (function () {
-    const logger = document.getElementById('log');
+    const logger = _('#log');
     console.log = function () {
-        for (var i = 0; i < arguments.length; i++) {
-            if (typeof arguments[i] == 'object') {
-                // If its an object, stringify
-                logger.innerHTML += `
-                    <div class="op">
-                        <div class="carrot">
-                            <span class="m-i">
-                                navigate_before
-                            </span>
-                        </div>
-                        <pre class="output">${(JSON && JSON.stringify ? JSON.stringify(arguments[i], undefined, 2) : arguments[i])}</pre>
+        for (let i = 0; i < arguments.length; i++) {
+            legacy(arguments[i]);
+            // If its an object, stringify
+            const pre = document.createElement('pre')
+            pre.classList.add('output');
+            pre.id = `log_${document.querySelectorAll('.output').length}`;
+            pre.innerHTML = formatLogItem(arguments[i]);
+            logger.innerHTML += `
+                <div class="op">
+                    <div class="carrot">
+                        <span class="m-i">
+                            navigate_before
+                        </span>
                     </div>
-                `;
-            } else {
-                // Else, log value
-                logger.innerHTML += `
-                    <div class="op">
-                        <div class="carrot">
-                            <span class="m-i">
-                                navigate_before
-                            </span>
-                        </div>
-                        <pre class="output">${arguments[i]}</pre>
-                    </div>
-                `;
+                    ${pre.outerHTML}
+                </div>
+            `;
+            if (theme === "dark") {
+                document.querySelectorAll(`#${pre.id} *`).forEach(child => {
+                    child.classList.toggle('dark');
+                })
             }
             // Scroll to bottom of the console on new logs
             logger.scrollTop = logger.scrollHeight;
@@ -165,7 +161,7 @@ const legacy = console.log;
 
 // Log errors to console with necessary styling
 function logError(e) {
-    const logger = document.getElementById('log');
+    const logger = _('#log');
     const themeClass = (theme === "dark") ? "dark" : "";
     logger.innerHTML += `
         <div class="op error ${themeClass}">
@@ -179,6 +175,73 @@ function logError(e) {
     `;
 };
 
+function formatLogItem(arg, depth) {
+    depth = depth || 0;
+    if (arg.outerHTML) {
+        // html -> highlight
+        return hljs.highlight(arg.outerHTML, {language: 'html'}).value;
+    } else if (typeof arg === 'object') {
+        // Recursive formatting for arrays and objects
+        if (Array.isArray(arg)) {
+            return `<span onclick='expandArr(this)' class='expand'>arrow_right</span><span class='hljs-info'>(${arg.length})</span> [<span>${
+                arg.reduce((res, obj, ind) => {
+                    return res+`${formatLogItem(obj, depth + 1)}${ind === (arg.length-1) ? ']</span>' : ', '}`;
+                }, "")
+            }<span style='display: none'>\n${
+                arg.reduce((res, obj, ind) => {
+                    return res+`${'  '.repeat(depth+1)}<span class='hljs-ind'>${ind}</span>: ${formatLogItem(obj, depth + 1)}${ind === (arg.length-1) ? '\n' : ',\n'}`;
+                }, "")
+            }${'  '.repeat(depth)}]</span>`
+        } else {
+            return `<span onclick='expandObj(this)' class='expand'>arrow_right</span>{<span>${
+                Object.values(arg).reduce((res, val, ind, arr) => {
+                    return res+`<span class='hljs-ind'>${Object.keys(arg)[ind]}</span>: ${formatLogItem(val, depth + 1)}${ind === (arr.length-1) ? '}' : ', '}`;
+                }, "")
+            }</span><span style='display: none'>\n${
+                Object.values(arg).reduce((res, val, ind, arr) => {
+                    return res+`${'  '.repeat(depth+1)}<span class='hljs-ind'>${Object.keys(arg)[ind]}</span>: ${formatLogItem(val, depth + 1)}${ind === (arr.length-1) ? '\n' : ',\n'}`;
+                }, "")
+            }${'  '.repeat(depth)}}</span>`
+        }
+    } else if (typeof arg === 'function') {
+        // function -> string -> format object keys -> highlight
+        return hljs.highlight(arg.toString().replace(/"+\w+":/g, match => match.replace(/\w+/g, "$&").replaceAll('"', "")), {language: 'javascript'}).value;
+    } else {
+        if (depth > 0 && typeof arg === 'string') return hljs.highlight(`"${arg.toString()}"`, {language: 'javascript'}).value;
+        // value -> highlight booleans / numbers
+        return (typeof arg == 'boolean' || typeof arg == 'number') ? hljs.highlight(arg.toString(), {language: 'javascript'}).value : arg;
+    }
+}
+
+function expandArr(e) {
+    const minifiedArr = e.nextSibling.nextSibling.nextSibling;
+    const expandedArr = e.nextSibling.nextSibling.nextSibling.nextSibling;
+    minifiedArr.style.display = "none";
+    expandedArr.style.display = "inline";
+    e.innerText = 'arrow_drop_down';
+    e.onclick = () => minimizeArr(e, minifiedArr, expandedArr);
+}
+function minimizeArr(e, minifiedArr, expandedArr) {
+    minifiedArr.style.display = "inline";
+    expandedArr.style.display = "none";
+    e.innerText = 'arrow_right';
+    e.onclick = () => expandArr(e);
+}
+function expandObj(e) {
+    const minifiedObj = e.nextSibling.nextSibling;
+    const expandedObj = e.nextSibling.nextSibling.nextSibling;
+    minifiedObj.style.display = "none";
+    expandedObj.style.display = "inline";
+    e.innerText = 'arrow_drop_down';
+    e.onclick = () => minimizeObj(e, minifiedObj, expandedObj);
+}
+function minimizeObj(e, minifiedObj, expandedObj) {
+    minifiedObj.style.display = "inline";
+    expandedObj.style.display = "none";
+    e.innerText = 'arrow_right';
+    e.onclick = () => expandObj(e);
+}
+
 // Generate initial user IDs
 function makeId(length) {
     var result = '';
@@ -188,4 +251,8 @@ function makeId(length) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+}
+
+function _(query) {
+    return document.querySelector(query);
 }
