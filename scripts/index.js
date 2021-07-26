@@ -21,6 +21,8 @@ function init() {
     // Init default ace editor
     editor = ace.edit('firepad');
     editor.session.setMode("ace/mode/javascript");
+    editor.setOption("showPrintMargin", false);
+    editor.setOption("wrap", true);
 
     // Display proper instance id
     _('#code-id').innerText = '#' + sessionId;
@@ -98,6 +100,7 @@ function init() {
             const avi = document.createElement('div');
             avi.classList.add('avatar');
             avi.style.backgroundColor = user.val().color;
+
             div.appendChild(avi);
             const p = document.createElement('p');
             p.innerText = Object.keys(users.val())[i];
@@ -177,31 +180,50 @@ function logError(e) {
 
 function formatLogItem(arg, depth) {
     depth = depth || 0;
-    if (arg.outerHTML) {
+    if (arg === undefined) {
+        return `<span class='hljs-ind'>undefined</span>`;
+    }
+    else if (arg === null) {
+        return `<span class='hljs-ind'>null</span>`;
+    }
+    else if (arg.outerHTML) {
         // html -> highlight
         return hljs.highlight(arg.outerHTML, {language: 'html'}).value;
     } else if (typeof arg === 'object') {
         // Recursive formatting for arrays and objects
         if (Array.isArray(arg)) {
+            if (arg.length === 0) return `<span class='hljs-info'>0</span> []`;
+            // Render 4 elements: the dropdown link, the array length, the single-line display
+            // of the array, and the expanded version of the array. Clicking the dropdown link
+            // toggles which display is visible.
             return `<span onclick='expandArr(this)' class='expand'>arrow_right</span><span class='hljs-info'>(${arg.length})</span> [<span>${
                 arg.reduce((res, obj, ind) => {
+                    // Call formatLogItem for each item in the array (with increased depth)
                     return res+`${formatLogItem(obj, depth + 1)}${ind === (arg.length-1) ? ']</span>' : ', '}`;
                 }, "")
             }<span style='display: none'>\n${
                 arg.reduce((res, obj, ind) => {
+                    // Call formatLogItem for each item in the array (with increased depth)
                     return res+`${'  '.repeat(depth+1)}<span class='hljs-ind'>${ind}</span>: ${formatLogItem(obj, depth + 1)}${ind === (arg.length-1) ? '\n' : ',\n'}`;
                 }, "")
-            }${'  '.repeat(depth)}]</span>`
+            }${'  '.repeat(depth)}]</span>`;
         } else {
+            // Render 3 elements: the dropdown link, the single-line display of the object, and
+            // the expanded version of the object. Clicking the dropdown link toggles which 
+            // display is visible.
             return `<span onclick='expandObj(this)' class='expand'>arrow_right</span>{<span>${
                 Object.values(arg).reduce((res, val, ind, arr) => {
+                    // Call formatLogItem for each key/value pair in the object (with increased
+                    // depth)
                     return res+`<span class='hljs-ind'>${Object.keys(arg)[ind]}</span>: ${formatLogItem(val, depth + 1)}${ind === (arr.length-1) ? '}' : ', '}`;
                 }, "")
             }</span><span style='display: none'>\n${
                 Object.values(arg).reduce((res, val, ind, arr) => {
+                    // Call formatLogItem for each key/value pair in the object (with increased
+                    // depth)
                     return res+`${'  '.repeat(depth+1)}<span class='hljs-ind'>${Object.keys(arg)[ind]}</span>: ${formatLogItem(val, depth + 1)}${ind === (arr.length-1) ? '\n' : ',\n'}`;
                 }, "")
-            }${'  '.repeat(depth)}}</span>`
+            }${'  '.repeat(depth)}}</span>`;
         }
     } else if (typeof arg === 'function') {
         // function -> string -> format object keys -> highlight
