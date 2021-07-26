@@ -181,18 +181,22 @@ function logError(e) {
 function formatLogItem(arg, depth) {
     depth = depth || 0;
     if (arg === undefined) {
+        // undefined -> string
         return `<span class='hljs-ind'>undefined</span>`;
-    }
-    else if (arg === null) {
+    } else if (arg === null) {
+        // null -> string
         return `<span class='hljs-ind'>null</span>`;
+    } else if (arg instanceof Date || arg instanceof Promise || arg instanceof Response) {
+        // object instance -> string
+        return String(arg);
     }
-    else if (arg.outerHTML) {
+    else if (arg instanceof Element || arg instanceof HTMLDocument) {
         // html -> highlight
         return hljs.highlight(arg.outerHTML, {language: 'html'}).value;
     } else if (typeof arg === 'object') {
         // Recursive formatting for arrays and objects
         if (Array.isArray(arg)) {
-            if (arg.length === 0) return `<span class='hljs-info'>0</span> []`;
+            if (arg.length === 0) return `<span class='hljs-info'>(0)</span> <span class='hljs-ind'>[]</span>`;
             // Render 4 elements: the dropdown link, the array length, the single-line display
             // of the array, and the expanded version of the array. Clicking the dropdown link
             // toggles which display is visible.
@@ -208,6 +212,7 @@ function formatLogItem(arg, depth) {
                 }, "")
             }${'  '.repeat(depth)}]</span>`;
         } else {
+            if (Object.keys(arg).length === 0) return `<span class='hljs-ind'>{}</span>`
             // Render 3 elements: the dropdown link, the single-line display of the object, and
             // the expanded version of the object. Clicking the dropdown link toggles which 
             // display is visible.
@@ -229,6 +234,7 @@ function formatLogItem(arg, depth) {
         // function -> string -> format object keys -> highlight
         return hljs.highlight(arg.toString().replace(/"+\w+":/g, match => match.replace(/\w+/g, "$&").replaceAll('"', "")), {language: 'javascript'}).value;
     } else {
+        // highlight strings within objects
         if (depth > 0 && typeof arg === 'string') return hljs.highlight(`"${arg.toString()}"`, {language: 'javascript'}).value;
         // value -> highlight booleans / numbers
         return (typeof arg == 'boolean' || typeof arg == 'number') ? hljs.highlight(arg.toString(), {language: 'javascript'}).value : arg;
