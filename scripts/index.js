@@ -1,4 +1,5 @@
 let firepadRef, editor, sessionId, theme = "light";
+let firepadWrapper, firepadElement, users, con, log, drag;
 
 function init() {
     const firebaseConfig = {
@@ -37,7 +38,10 @@ function init() {
         // Set new user id until changed
         const id = "User " + makeId(6);
         _("#username").value = id;
-        firepad.setUserId(id)
+        firepad.setUserId(id);
+
+        // Set initial editor height;
+        initDraggableHeight();
 
         // Toggle light and dark theme styles
         _('#theme-toggle').addEventListener('click', () => {
@@ -283,4 +287,34 @@ function makeId(length) {
 
 function _(query) {
     return document.querySelector(query);
+}
+
+const handleMouseMove = e => {
+    e.preventDefault();
+    if (e.clientY < window.innerHeight - 47 && e.clientY > 150) {
+        const calculatedHeight = window.innerHeight - e.clientY;
+        con.style.height = `${calculatedHeight}px`;
+        firepadElement.style.height = `calc(100vh - (75px + ${calculatedHeight}px))`;
+        firepadWrapper.style.height = `calc(100vh - (75px + ${calculatedHeight}px))`;
+        users.style.height = `calc(100vh - (75px + ${calculatedHeight}px))`;
+        log.style.height = `calc(${calculatedHeight}px - 47px)`;
+        editor.resize();
+    }
+}
+
+function initDraggableHeight() {
+    firepadWrapper = document.querySelector('.firepad');
+    firepadElement = document.querySelector('#firepad');
+    users = document.querySelector('#users');
+    drag = document.querySelector('#drag');
+    con = document.querySelector('#console');
+    log = document.querySelector('#log');
+    firepadElement.style.height = `${window.innerHeight - 375}px`;
+    firepadWrapper.style.height = `${window.innerHeight - 375}px`;
+    drag.addEventListener('mousedown', () => {
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+        })
+    });
 }

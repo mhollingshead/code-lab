@@ -21,21 +21,26 @@ body {
 }
 #logo {
     width: 41px;
+    max-height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: #0366d6;
     font-size: 24px;
     font-weight: 700;
-    display: inline-block;
+    display: inline;
     text-align: center;
+    vertical-align: center;
 }
 #firepad, .firepad {
     width: calc(100vw - 300px) !important;
-    height: calc(100vh - 375px);
 }
 #users {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 300px;
     height: calc(100vh - 375px);
     padding: 16px;
+    overflow-y: scroll;
 }
 #console {
     width: 100vw;
@@ -106,7 +111,7 @@ button {
     overflow-y: scroll;
 }
 #console-head {
-    padding: 8px 0 8px 41px;
+    padding: 2px 0 8px 41px;
     display: flex;
     align-items: center;
 }
@@ -184,8 +189,15 @@ body {
 #users {
     border-left: 1px solid #dedede;
 }
-#console {
+/* #console {
     border-top: 1px solid #dedede;
+} */
+#drag {
+    background-color: white;
+    border-top: 1px solid #dedede;
+    cursor: row-resize;
+    height: 1px;
+    padding-bottom: 6px;
 }
 #console-head {
     background-color: white;
@@ -252,8 +264,12 @@ button {
 .dark #users {
     border-left: 1px solid #25282c;
 }
-.dark #console {
+/* .dark #console {
     border-top: 1px solid #25282c;
+} */
+.dark #drag {
+    border-top: 1px solid #25282c;
+    background-color: #1D1F21;
 }
 .dark #console-head {
     background-color: #1D1F21;
